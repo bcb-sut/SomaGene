@@ -1,8 +1,5 @@
 # SomaGene 
   
-  some explanation and logo ans stuffs //TODO
-
-  
   
 ## Installation 
   
