@@ -3,16 +3,15 @@
   
 ## Installation 
   
-### Requirements
-The following R packages:
+The following R packages are required:
   * [data.table](https://github.com/Rdatatable/data.table)
   * [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html)
   * [IRanges](https://bioconductor.org/packages/release/bioc/html/IRanges.html)
   
-  
+To install the package from source, clone the repository and then run the following code in R:
 ```r
 # Install SomaGene from source
-install.packages("THE_SOURCE_DIR", repos = NULL, type = "source")
+install.packages("path/to/SomaGene_src", repos = NULL, type = "source")
 ```
 
 ## Usage
