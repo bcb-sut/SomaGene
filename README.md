@@ -1,20 +1,60 @@
 # SomaGene 
   
+  some explanation and logo ans stuffs //TODO
+
+  
   
 ## Installation 
   
-The following R packages are required:
+### Requirements
+The following R packages:
   * [data.table](https://github.com/Rdatatable/data.table)
   * [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html)
   * [IRanges](https://bioconductor.org/packages/release/bioc/html/IRanges.html)
   
-To install the package from source, clone the repository and then run the following code in R:
-```r
-# Install SomaGene from source
-install.packages("path/to/SomaGene_src", repos = NULL, type = "source")
+  
+
+Clone the package from the github page in the directory DIR
+```
+git clone https://github.com/bcb-sut/SomaGene.git DIR
+
 ```
 
+Then install the SomaGene using R function `install.packages()`
+
+```r
+# Install SomaGene from source
+install.packages("DIR/SomaGene_src", repos = NULL, type = "source")
+```
+
+
 ## Usage
+
+First you should import the SomaGene library
+
+```r
+library(SomaGene)
+```
+
+Then you should read your input data (for example your gene list)
+There's a small test data in github.
+
+```r
+table <- fread("DIR/test_data/test_table.tsv")
+```
+
+The dataset should contains four columns, ID, chromosome, start, and end.
+For example the forrmat of test_table.tsv is like below:
+
+| GeneID  | chr | start | end |
+| ------------- | ------------- | ------------- | ------------- |
+| ENSG00000223764	  | chr1  | 845735 | 864616 |
+
+
+**The values of chromosome column should have the format of ['chr' + number of chromosomoe] like chr2 or chrX**
+
+
+
 
 * `annotateBinary(input_id, input_chr, input_start, input_end, annot_id = NULL, annot_chr, annot_start, annot_end)`: This function annotates the input genomic regions with a given "binary" annotation. A "binary" annotation is simply a set of genomic regions without any extra attribute (e.g. the set of enhancers/promoters or the set of eQTLs).
 
@@ -36,6 +76,26 @@ install.packages("path/to/SomaGene_src", repos = NULL, type = "source")
    * **input_end**: Numeric vector specifying the ending position of input genomic regions.
    * **overlap_count**: Numeric vector specifying the count of overlapped annotations with that geneID.
    * **overlapping_annot_IDs**: Character vector specifying the IDs of overlapped annotations with that geneID (separated by comma).
+   
+   
+There is a 'Fantom5_enhancer_phase1and2.txt' file for testing.
+   
+```r
+annot <- fread("DIR/test_data/Fantom5_enhancer_phase1and2.txt")
+
+# Then you run the annotateBinary function
+result <- annotateBinary(input_id = table$geneID, input_chr =  table$chr, input_start =  table$start, input_end =  table$end, annot_id = rownames(annot), annot_chr = annot$chr, annot_start = annot$start, annot_end = annot$end)
+
+```
+
+The result is like below
+
+| GeneID  | chr | start | end | overlap_count | overlapping_annot_IDs
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| ENSG00000223764	  | chr1  | 845735 | 864616 | 3 | 4,5,6 |
+
+
+
 
   
 * `annotateMultiScore(input_id, input_chr, input_start, input_end, annot_chr, annot_start, annot_end, annot_sub_id, annot_sub_score)`: This function annotates the input genomic regions with a given "multi-score" annotation. A "multi-score" annotation specifies a set of genomic regions and assigns a set of sub-IDs and their corresponding sub-scores to each of them (e.g. the annotation of DNAse hypersensitive clusters by ENCODE).
@@ -64,6 +124,26 @@ install.packages("path/to/SomaGene_src", repos = NULL, type = "source")
    * For each input genomic region, the average score of annotation for each sub-ID is measured as the weighted average of scores of overlapping annotation entries where the percentages of overlaps of annotation entries with the input region are taken as weights (this is measured for each sub-ID separately). The percentage of overlap between an input genomic region with a specific annotation sub-ID is calculated as the total portion of the input region that is covered by that annotation sub-ID divided by the length of the region.
 
 
+   
+There is a 'dnase.tsv' file for testing.
+   
+```r
+dnase <- fread("DIR/test_data/dnase.tsv")
+
+# Then you run the annotateBinary function
+result <- annotateMultiScore(input_id = table$geneID, input_chr = table$chr, input_start = table$start, input_end = table$end, annot_chr = dnase$chrom, annot_start = dnase$chromStart, annot_end = dnase$chromEnd, annot_sub_id = dnase$sourceIds, annot_sub_score = dnase$sourceScores)
+
+
+```
+
+The result is like below
+
+| GeneID  | chr | start | end | overlapping_sub_ids | overlap_sub_scores | overlap_percentages |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| ENSG00000223764	  | chr1  | 845735 | 864616 | 90,115,89 | 433.94021101993,560.202813599062,315 | 7.34838042729152,7.34838042729152,2.42935906271537 |
+
+
+
 
 
 * `annotateSingleScore(input_id, input_chr, input_start, input_end, annot_chr, annot_start, annot_end, annot_score)`: This function annotates the input genomic regions with a given "single-score" annotation. A "single-score" annotation specifies a set of genomic regions and assigns a numeric score to each of them (e.g. the annotation of histone modification peaks by ENCODE).
@@ -90,6 +170,27 @@ install.packages("path/to/SomaGene_src", repos = NULL, type = "source")
   
   __Note__:
   * For each input genomic region, the average score of annotation is measured as the weighted average of scores of overlapping annotation entries where the percentages of overlaps of annotation entries with the input region are taken as weights. The percentage of overlap between an input genomic region with annotation entries is calculated as the total portion of the input region that is covered by the annotation entries divided by the length of the region.
+  
+  
+
+There is a 'ctcf.tsv' file for testing.
+   
+```r
+ctcf <- fread("DIR/test_data/ctcf.tsv")
+
+# Then you run the annotateBinary function
+
+result <- annotateSingleScore(input_id = table$geneID, input_chr = table$chr, input_start = table$start, input_end = table$end, annot_chr = ctcf$chr, annot_start = ctcf$start, annot_end = ctcf$end, annot_score = ctcf$score)
+
+
+```
+
+The result is like below
+
+| GeneID  | chr | start | end | overlap_score | overlap_percentages |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| ENSG00000223764	  | chr1  | 845735 | 864616 | 435.9652 | 0.2223493 |
+
 
   
 * `annotateCategorical(input_id, input_chr, input_start, input_end, annot_chr, annot_start, annot_end, annot_category)`: This function annotates the input genomic regions with a given "categorical" annotation. A "categorical" annotation specifies a set of genomic regions and assigns a category to each of them (e.g. chromHMM annotation which assigns a chromatin state to any segment of the genome).
@@ -114,6 +215,26 @@ install.packages("path/to/SomaGene_src", repos = NULL, type = "source")
    
    __Note__:
    * The percentage of overlap between an input genomic region with a specific category is calculated as the total portion of the input region that is covered by that category devided by the length of the region.
+
+
+There is a 'hmm.tsv' file for testing.
+
+```r
+
+hmm <- fread("DIR/test_data/hmm.tsv")
+
+# Then you run the annotateBinary function
+
+result <- annotateCategorical(input_id = table$geneID, input_chr = table$chr, input_start = table$start, input_end = table$end, annot_chr = hmm$chr, annot_start = hmm$start, annot_end = hmm$end, annot_category = hmm$name)
+
+```
+
+The result is like below
+
+| GeneID  | chr | start | end | overlapping_categories | overlap_percentages |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| ENSG00000223764	  | chr1  | 845735 | 864616 | 4_Strong_Enhancer | 100 |
+
 
 
    
