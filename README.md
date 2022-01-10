@@ -1,17 +1,12 @@
 # SomaGene 
   
-  some explanation and logo ans stuffs //TODO
-
-  
   
 ## Installation 
   
-### Requirements
-The following R packages:
+The following R packages are required:
   * [data.table](https://github.com/Rdatatable/data.table)
   * [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html)
   * [IRanges](https://bioconductor.org/packages/release/bioc/html/IRanges.html)
-  
   
 
 Clone the package from the github page in the directory DIR
@@ -19,14 +14,12 @@ Clone the package from the github page in the directory DIR
 git clone https://github.com/bcb-sut/SomaGene.git DIR
 
 ```
-
 Then install the SomaGene using R function `install.packages()`
 
 ```r
 # Install SomaGene from source
 install.packages("DIR/SomaGene_src", repos = NULL, type = "source")
 ```
-
 
 ## Usage
 
@@ -54,8 +47,6 @@ For example the forrmat of test_table.tsv is like below:
 **The values of chromosome column should have the format of ['chr' + number of chromosomoe] like chr2 or chrX**
 
 
-
-
 * `annotateBinary(input_id, input_chr, input_start, input_end, annot_id = NULL, annot_chr, annot_start, annot_end)`: This function annotates the input genomic regions with a given "binary" annotation. A "binary" annotation is simply a set of genomic regions without any extra attribute (e.g. the set of enhancers/promoters or the set of eQTLs).
 
                 
@@ -76,8 +67,8 @@ For example the forrmat of test_table.tsv is like below:
    * **input_end**: Numeric vector specifying the ending position of input genomic regions.
    * **overlap_count**: Numeric vector specifying the count of overlapped annotations with that geneID.
    * **overlapping_annot_IDs**: Character vector specifying the IDs of overlapped annotations with that geneID (separated by comma).
-   
-   
+
+
 There is a 'Fantom5_enhancer_phase1and2.txt' file for testing.
    
 ```r
@@ -93,9 +84,6 @@ The result is like below
 | GeneID  | chr | start | end | overlap_count | overlapping_annot_IDs
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | ENSG00000223764	  | chr1  | 845735 | 864616 | 3 | 4,5,6 |
-
-
-
 
   
 * `annotateMultiScore(input_id, input_chr, input_start, input_end, annot_chr, annot_start, annot_end, annot_sub_id, annot_sub_score)`: This function annotates the input genomic regions with a given "multi-score" annotation. A "multi-score" annotation specifies a set of genomic regions and assigns a set of sub-IDs and their corresponding sub-scores to each of them (e.g. the annotation of DNAse hypersensitive clusters by ENCODE).
@@ -144,8 +132,6 @@ The result is like below
 
 
 
-
-
 * `annotateSingleScore(input_id, input_chr, input_start, input_end, annot_chr, annot_start, annot_end, annot_score)`: This function annotates the input genomic regions with a given "single-score" annotation. A "single-score" annotation specifies a set of genomic regions and assigns a numeric score to each of them (e.g. the annotation of histone modification peaks by ENCODE).
 
 
@@ -170,10 +156,9 @@ The result is like below
   
   __Note__:
   * For each input genomic region, the average score of annotation is measured as the weighted average of scores of overlapping annotation entries where the percentages of overlaps of annotation entries with the input region are taken as weights. The percentage of overlap between an input genomic region with annotation entries is calculated as the total portion of the input region that is covered by the annotation entries divided by the length of the region.
-  
-  
 
-There is a 'ctcf.tsv' file for testing.
+  
+  There is a 'ctcf.tsv' file for testing.
    
 ```r
 ctcf <- fread("DIR/test_data/ctcf.tsv")
@@ -191,7 +176,7 @@ The result is like below
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | ENSG00000223764	  | chr1  | 845735 | 864616 | 435.9652 | 0.2223493 |
 
-
+  
   
 * `annotateCategorical(input_id, input_chr, input_start, input_end, annot_chr, annot_start, annot_end, annot_category)`: This function annotates the input genomic regions with a given "categorical" annotation. A "categorical" annotation specifies a set of genomic regions and assigns a category to each of them (e.g. chromHMM annotation which assigns a chromatin state to any segment of the genome).
                 
@@ -234,8 +219,6 @@ The result is like below
 | GeneID  | chr | start | end | overlapping_categories | overlap_percentages |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | ENSG00000223764	  | chr1  | 845735 | 864616 | 4_Strong_Enhancer | 100 |
-
-
 
    
 
